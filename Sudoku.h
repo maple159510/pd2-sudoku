@@ -11,9 +11,9 @@ public:
 	void rotate(int);
 	void flip(int);
 	void transform();
-	void change();
-	void printOut(bool);
-	int answer[1];
+	void printOut();
+private:
+	int answer[0];
 	int map[9][9];
 	int ans[9][9];
 };
