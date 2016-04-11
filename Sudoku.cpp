@@ -7,35 +7,31 @@
 #include<fstream>
 #include"Sudoku.h"
 using namespace std;
-int i,j;
+
 int map[9][9];
 int ans[9][9];
 int answer[0];
+
 void giveQuestion();
 void readIn();
-void solve();
+
+void transform();
 void changeNum(int,int);
 void changeRow(int,int);
 void changeCol(int,int);
 void rotate(int);
 void flip(int);
-void transform();
+
+void solve();
 void solve_sudoku();
-void print_ans();
-void change();
+
 void printOut();
+
 int checkRow(int,int);
 int checkCol(int,int);
 int checkSquare(int,int,int);
-int main(){
-	giveQuestion();
-	Sudoku hey;
-	hey.solve();
-	system("pause");
-	return 0;
-}
 
-void giveQuestion(){
+void Sudoku::giveQuestion(){
 	int Question_Num=5;
 	srand(time(NULL));
 	int n;
@@ -99,211 +95,238 @@ void giveQuestion(){
 	}
 }
 
-
-
-void Sudoku::changeNum(int a,int b){
-	for(i=0;i<9;i++){
-		for(j=0;j<9;j++){
-				if(map[i][j]==a){
-					map[i][j]==b;
-					return;
-				}
-				if(map[i][j]==b){
-					map[i][j]==a;
-					return;
-				}
+void Sudoku::readIn(){//right
+	for(int i=0;i<9;i++){
+		for(int j=0;j<9;j++){
+			cin>>map[i][j];
 		}
 	}
 }
-void Sudoku::changeRow(int a,int b){
+
+void Sudoku::changeNum(int a,int b){//right	
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+					if(map[i][j]==a){
+						map[i][j]=b;
+					}	
+					else if(map[i][j]==b){
+						map[i][j]=a;
+					}
+			}
+		}	
+}
+void Sudoku::changeRow(int a,int b){//right
 	int x;
 	if(a!=b){
-		for(i=0;i<3;i++){
-			for(j=0;j<9;j++){
+		for(int i=0;i<3;i++){
+			for(int j=0;j<9;j++){
 				x=map[a*3+i][j];
 				map[a*3+i][j]=map[b*3+i][j];
 				map[b*3+i][j]=x;
-				return;
 			}
 		}
+		return;
 	}
-	else return;
+	else cout<<"Failed"<<endl;
 }
 
-void Sudoku::changeCol(int a,int b){
+void Sudoku::changeCol(int a,int b){//right
 	int x;
 	if(a!=b){
-		for(j=0;j<3;j++){
-			for(i=0;i<9;i++){
+		for(int j=0;j<3;j++){
+			for(int i=0;i<9;i++){
 				x=map[i][a*3+j];
 				map[i][a*3+j]=map[i][b*3+j];
 				map[i][b*3+j]=x;
-				return;
 			}
 		}
+		return;
 	}
-	else return;
+	else cout<<"Failed"<<endl;
 }
 
-void Sudoku::rotate(int n){
+void Sudoku::rotate(int n){//right
+	int ww[9][9]={0};
 	if(n%4==0) return;
 	if(n%4==1){
 		/*90 degrees*/
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
-				map[j][8-i]=map[i][j];
-				return;
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				ww[j][8-i]=map[i][j];
 			}
-		}	
+		}
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				map[i][j]=ww[i][j];
+			}
+		}
+		return;	
 	}
 	if(n%4==2){
 		/*180 degrees*/
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
-				map[8-i][8-j]=map[i][j];
-				return;
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				ww[8-i][8-j]=map[i][j];
+			}
+		}
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				map[i][j]=ww[i][j];
 			}
 		}	
+		return;
 	}
 	if(n%4==3){
 		/*270 degrees*/
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
-				map[8-j][i]=map[i][j];
-				return;
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				ww[8-j][i]=map[i][j];
 			}
 		}
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				map[i][j]=ww[i][j];
+			}
+		}
+		return;
 	}
 }
 
-void Sudoku::flip(int n){
+void Sudoku::flip(int n){//right
 	int x,y;
 	if(n==0){
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
+		for(int j=0;j<9;j++){
+			for(int i=0;i<5;i++){
 				x=map[8-i][j];
 				map[8-i][j]=map[i][j];
 				map[i][j]=x;
-				return;
 			}
 		}
+		return;
 	}
 	if(n==1){
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
+		for(int i=0;i<9;i++){
+			for(int j=0;j<5;j++){
 				y=map[i][8-j];
 				map[i][8-j]=map[i][j];
 				map[i][j]=y;
-				return;
 			}
 		}
+		return;
 	}
 }
 
 void Sudoku::transform(){
-	readIn();
-	change();
-	printOut(false);
-}
-
-void Sudoku::change(){
 	srand(time(NULL));
 	changeNum(rand()%9+1,rand()%9+1);
 	changeRow(rand()%3,rand()%3);
 	changeCol(rand()%3,rand()%3);
 	rotate(rand()%101);
 	flip(rand()%2);
+	printOut();
 }
 
-void Sudoku::printOut(bool isAns){
-	for(i=0;i<9;i++){
-		for(j=0;j<9;j++){
+void Sudoku::printOut(){
+	for(int i=0;i<9;i++){
+		for(int j=0;j<9;j++){
 			cout<<map[i][j]<<" ";
 		}
-		cout<<endl;
+		cout<<endl;	
 	}
-	/*if(!isAns){
-		for(i=0;i<9;++i){
-			for(j=0;j<9;++j){
-				cout<<map[i][j];
-			}
-		}
-	}
-	else{
-		for(i=0;i<9;++i){
-			for(j=0;j<9;++j){
-				cout<<ans[i][j];
-			}
-		}
-	}*/
 }
 
 void Sudoku::solve(){
-	readIn();
 	solve_sudoku();
 	if(answer[0]==0) cout<<"0"<<endl;
 	else if(answer[0]==1){
 		cout<<"1"<<endl;
-		print_ans();
-	}
-}
-
-void Sudoku::readIn(){	
-	for(i=0;i<9;i++){
-		for(j=0;j<9;j++){
-			cin>>map[i][j];
-		}
-	}
-}
-
-void print_ans(){
-	for(i=0;i<9;i++){
-		for(j=0;j<9;j++){
-			cout<<ans[i][j]<<" ";
-		}
-		cout<<endl;
+		printOut();
 	}
 }
 
 void solve_sudoku(){
-	int num=0;
-	for(i=0;i<9;i++){
-		for(j=0;j<9;j++){
+	/*int q=0,input=0;
+	for(int i=0;i<9;i++){
+		for(int j=0;j<9;j++){
+			if(map[i][j]!=0) q++;
+		}
+		if(q==8){
+			for(j=0;j<9;j++){
+				if(map[i][j]==0){
+					for(input=1;input<=9;input++){
+						if((checkRow(input,i)==1)&&(checkCol(input,j)==1)&&(checkSquare(input,i,j)==1)){
+							map[i][j]=input;
+						}	
+					}
+				}
+			}
+		}
+	}*/
+	
+	
+	
+	
+	answer[0]=0;
+	int num=0,t=0;
+	int a[9]={0},b[9]={0};
+	for(int i=0;i<9;i++){
+		for(int j=0;j<9;j++){
+			if(map[i][j]!=0) num++;
+			if(map[i][j]==0){
+				a[t]=i;
+				b[t]=j;
+				t++;
+			}
+		}
+	}
+	if(num==81){
+		answer[0]++;
+		return;
+	}
+	else{
+		int input;
+		for(int k=0;k<81;k++){
+			for(input=1;input<=9;input++){
+				if((checkRow(input,a[k])==1)&&(checkCol(input,b[k])==1)&&(checkSquare(input,a[k],b[k])==1)){
+					map[a[k]][b[k]]=input;
+					break;
+				}	
+			}
+			if(map[a[k]][b[k]]==0){	
+				if(k==0){
+					answer[0]=0;
+					return;
+				}
+				else{
+					for(input=map[a[k-1]][b[k-1]]+1;input<=9;input++){
+						if((checkRow(input,a[k-1])==1)&&(checkCol(input,b[k-1])==1)&&(checkSquare(input,a[k-1],b[k-1])==1)){
+							map[a[k-1]][b[k-1]]=input;
+							break;
+						}	
+					}
+					k--;
+				}		
+			}
+		}
+	}
+	num=0;
+	for(int i=0;i<9;i++){
+		for(int j=0;j<9;j++){
 			if(map[i][j]!=0) num++;
 		}
 	}
 	if(num==81){
 		answer[0]++;
 		if(answer[0]==2){
-			printf("2\n");
+			cout<<"2"<<endl;
 			return;
 		}
-		for(i=0;i<9;i++){
-			for(j=0;j<9;j++){
-				ans[i][j]=map[i][j];
-			}
-		}
 		return;
-	}
-	int input;
-	for(i=8;i>=0;i--){
-		for(j=8;j>=0;j--){
-			if(map[i][j]==0){
-				for(input=1;input<=9;input++){
-					if(checkRow(input,i)==1&&checkCol(input,j)==1&&checkSquare(input,i,j)==1){
-						map[i][j]=input;
-						solve_sudoku();
-						map[i][j]=0;
-					}
-				}
-				return;
-			}
-		}
 	}
 }
 
 int checkRow(int row,int r){
-	for(j=0;j<9;j++){
+	for(int j=0;j<9;j++){
 		if(map[r][j]==row)
 		return 0;
 	}
@@ -311,17 +334,17 @@ int checkRow(int row,int r){
 }
 
 int checkCol(int col,int c){
-	for(i=0;i<9;i++){
+	for(int i=0;i<9;i++){
 		if(map[i][c]==col)
 		return 0;
 	}
 	return 1;
 }
 
-int checkSquare(int square,int s1,int s2){
-	int x=s1-(s1%3),y=s2-(s2%3);
-	for(i=0;i<3;i++){
-		for(j=0;j<3;j++){
+int checkSquare(int square,int s,int ss){
+	int x=s-(s%3),y=ss-(ss%3);
+	for(int i=0;i<3;i++){
+		for(int j=0;j<3;j++){
 			if(map[x+i][y+j]==square)
 			return 0;
 		}
